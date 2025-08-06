@@ -43,13 +43,19 @@ CREATE TABLE retail_sales
 
 SELECT * FROM retail_sales
 LIMIT 10
-								----- DATA CLEANING-----
+
+### 2. DATA CLEANING
+
 -- Checking for null values --
+```sql
 SELECT * FROM retail_sales
 WHERE transactions_id IS NULL
+```
 -- no null values in transactions_id
 
 -- checks for null values--
+
+```sql
 SELECT * FROM retail_sales
 WHERE 
 	transactions_id IS NULL
@@ -67,9 +73,10 @@ WHERE
 	cogs IS NULL
 	OR
 	total_sale IS NULL;
-	
+```
  -- Delete the null values--
 
+```sql
  DELETE FROM retail_sales
  WHERE 
 	transactions_id IS NULL
@@ -87,34 +94,46 @@ WHERE
 	cogs IS NULL
 	OR
 	total_sale IS NULL;
-	
-							-- Data Exploration --
+```
+### 3.-- Data Exploration --
 
 -- How many sales we have?--
+```sql
 SELECT COUNT(*)as total_sale FROM retail_sales
+```
 -- shows there have been 1997 sales 
 
 -- check how many customers we have --
+```sql
 SELECT COUNT(*)as customer_id FROM retail_sales
+```
 -- shows 1997 ie includes duplicates 
 
 --- remove duplicates --
+```sql
 SELECT COUNT(DISTINCT customer_id )as total_sale FROM retail_sales
+```
 -- shows the total sale by showing no of customers 
 
 --check the different types of category --
+```sql
 SELECT DISTINCT category FROM retail_sales
+```
 -- tells us there are 3 categories in our data ie - electronics, clothing and beauty 
 
 -- to get just the no of categories  --
+```sql
 SELECT COUNT(DISTINCT category ) FROM retail_sales
+```
 -- gives 3 (no)
 
-			--- DATA ANALYSIS AND BUSINESS KEY PROBLEMS AND ANSWERS--
+ ### 3. DATA ANALYSIS AND BUSINESS KEY PROBLEMS AND ANSWERS--
 
 -- Retrieve all columns for sales made on 2022-11-05 --
+```sql
 SELECT * FROM retail_sales
 WHERE sale_date = '2022-11-05';
+```
 -- shows about 11 sales on that date --
 
 -- Retrieve all transactions where the category is clothing and the quantity sold 
@@ -125,31 +144,38 @@ AND quantiy >= 4
 AND TO_CHAR (sale_date,'YYYY-MM') = '2022-11'
 
 --**calculate the total sales for each category **
+```sql
 SELECT category,
 SUM(total_sale) 
 FROM retail_sales
 GROUP BY category
-
+```
 -- find the average age of customers who purchased items from the beauty categoty 
+```sql
 SELECT ROUND(AVG(age),2)
 FROM retail_sales 
 WHERE category = 'Beauty'
+```
 -- the avg age is 40.4157....
 -- round is used to round up the result to upto 2 places 
 
 -- find all transactions where the total_sales is greater than 1000
+```sql
 SELECT * 
 FROM retail_sales 
 WHERE total_sale> 1000 
-
+```
 -- find the total number of transactions(transaction_id)made by each gender in each category 
+```sql
 SELECT category, gender,
 COUNT(*) 
 FROM retail_sales 
 GROUP BY category, gender 
-ORDER BY 1 -- puts similar things together 
+ORDER BY 1 -- puts similar things together
+```
 
 --** cal the aveage sale for each month, find out best selling month in each year ** 
+```sql
 SELECT
 	year, month, avg_sale
 	FROM(
@@ -164,22 +190,27 @@ SELECT
 		ORDER BY 1,3 DESC
 	)as t1
 	WHERE rank = 1
+```
 	
 -- **find  top 5 customers based on the highest total sales 
 -- many customers have shopped repeatedly soo we group by customers and sum the sales for each 
+```sql
 SELECT  customer_id, 
 SUM(total_sale)
 FROM retail_sales 
 GROUP BY 1
 ORDER BY 2 DESC
 LIMIT 5
-
+```
 -- find the no  of unique customers who purchased items from each category 
+```sql
 SELECT category, COUNT(DISTINCT customer_id)
 FROM retail_sales
-GROUP BY category 
+GROUP BY category
+```
 
 -- **create each shift and no of orders (eg - morning < 12)
+```sql
 WITH hourly_sale -- creates a table with shift column 
 AS
 (
@@ -196,7 +227,7 @@ SELECT shift,
 COUNT(*) as total_orders
 FROM hourly_sale 
 GROUP BY shift 
+```
 
-
----- End of project ----	
+### ---- End of project ----	
 
